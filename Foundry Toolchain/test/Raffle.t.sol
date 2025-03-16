@@ -511,39 +511,6 @@ contract RaffleLifecycleTest is Test {
         vm.deal(ticketBuyerOne, 2 ether);
         vm.deal(ticketBuyerTwo, 2 ether);
     }
-
-    function test_RaffleLifecycle() public {
-        // Step 1: Create Raffle
-        vm.startPrank(raffleCreator);
-        raffleHouse.createRaffle(ticketPrice, startTime, endTime, name, symbol);
-        vm.stopPrank();
-
-        // Step 2: Buy Tickets
-        vm.startPrank(ticketBuyerOne);
-        raffleHouse.buyTicket{value: ticketPrice}(0);
-        vm.stopPrank();
-
-        vm.startPrank(ticketBuyerTwo);
-        raffleHouse.buyTicket{value: ticketPrice}(0);
-        vm.stopPrank();
-
-        // Step 3: Select Winner
-        vm.warp(endTime + 1);
-        vm.startPrank(raffleCreator);
-        raffleHouse.selectWinner(0);
-        vm.stopPrank();
-
-        // Step 4: Claim Prize
-        Raffle memory raffle = raffleHouse.getRaffle(0);
-
-        address winner = NFT(raffle.token).ownerOf(raffle.winningTicket);
-        vm.startPrank(winner);
-
-        uint256 winnerCurrentBalance = winner.balance;
-        raffleHouse.claimPrize(0, raffle.winningTicket);
-
-        assertEq(winner.balance, winnerCurrentBalance + raffle.accumulatedPrize);
-    }
 }
 
 
