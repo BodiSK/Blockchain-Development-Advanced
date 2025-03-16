@@ -3,7 +3,7 @@ pragma solidity 0.8.28;
 
 import {Test} from "forge-std/Test.sol";
 import {console} from "forge-std/console.sol";
-import {RaffleHouse, InvalidTicketPrice, InvalidTime, InvalidRaffleId, RaffleInActive, InvalidAmount, RaffleStillActive, NoTicketsPurchased, NotOwnerOfWinningTicket} from "../src/RaffleHouse.sol";
+import {RaffleHouse, Raffle, InvalidTicketPrice, InvalidTime, InvalidRaffleId, RaffleInActive, InvalidAmount, RaffleStillActive, NoTicketsPurchased, NotOwnerOfWinningTicket} from "../src/RaffleHouse.sol";
 import {NFT} from "../src/NFT.sol";
 import {IERC721} from "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 
@@ -14,7 +14,7 @@ contract RaffleHouseInitilizationTest is Test {
         raffleHouse = new RaffleHouse();
     }
 
-    function test_Initialization() public {
+    function test_Initialization() view public {
         assertEq(raffleHouse.raffleCounter(), 0);
     }
 }
@@ -125,22 +125,10 @@ contract RaffleCreationTest is Test {
         raffleHouse.createRaffle(ticketPrice, startTime, endTime, name, symbol);
         vm.stopPrank();
 
-        (
-            address creator,
-            uint256 ticketPrice_,
-            uint256 startTime_,
-            uint256 endTime_,
-            string memory ticketName,
-            string memory ticketSymbol,
-            address token_,
-            uint256 accumulatedPrize,
-            uint256 totalTickets,
-            bool winnerSelected,
-            uint256 winningTicket
-        ) = raffleHouse.raffles(0);
+        Raffle memory raffle = raffleHouse.getRaffle(0);
 
 
-        token = NFT(token_);
+        token = NFT(raffle.token);
         assertEq(token.owner(), address(raffleHouse));
         assertEq(token.name(), name);
         assertEq(token.symbol(), symbol);
@@ -151,22 +139,10 @@ contract RaffleCreationTest is Test {
         raffleHouse.createRaffle(ticketPrice, startTime, endTime, name, symbol);
         vm.stopPrank();
 
-        (
-            address creator,
-            uint256 ticketPrice_,
-            uint256 startTime_,
-            uint256 endTime_,
-            string memory ticketName,
-            string memory ticketSymbol,
-            address token_,
-            uint256 accumulatedPrize,
-            uint256 totalTickets,
-            bool winnerSelected,
-            uint256 winningTicket
-        ) = raffleHouse.raffles(0);
+        Raffle memory raffle = raffleHouse.getRaffle(0);
 
 
-        token = NFT(token_);
+        token = NFT(raffle.token);
         assertEq(token.supportsInterface(type(IERC721).interfaceId), true);
     }
 
@@ -258,22 +234,10 @@ contract TicketBuyingTest is Test {
         vm.startPrank(ticketBuyerOne);
         raffleHouse.buyTicket{value: ticketPrice}(0);
 
-        (
-            address creator,
-            uint256 ticketPrice_,
-            uint256 startTime_,
-            uint256 endTime_,
-            string memory ticketName,
-            string memory ticketSymbol,
-            address token_,
-            uint256 accumulatedPrize,
-            uint256 totalTickets,
-            bool winnerSelected,
-            uint256 winningTicket
-        ) = raffleHouse.raffles(0);
+        Raffle memory raffle = raffleHouse.getRaffle(0);
 
-        assertEq(totalTickets, 1);
-        assertEq(accumulatedPrize, ticketPrice);
+        assertEq(raffle.totalTickets, 1);
+        assertEq(raffle.accumulatedPrize, ticketPrice);
     }
 
     function test_MultipleTicketsBought() public {
@@ -285,44 +249,20 @@ contract TicketBuyingTest is Test {
         raffleHouse.buyTicket{value: ticketPrice}(0);
         vm.stopPrank();
 
-        (
-            address creator,
-            uint256 ticketPrice_,
-            uint256 startTime_,
-            uint256 endTime_,
-            string memory ticketName,
-            string memory ticketSymbol,
-            address token_,
-            uint256 accumulatedPrize,
-            uint256 totalTickets,
-            bool winnerSelected,
-            uint256 winningTicket
-        ) = raffleHouse.raffles(0);
+        Raffle memory raffle = raffleHouse.getRaffle(0);
 
-        assertEq(totalTickets, 2);
-        assertEq(accumulatedPrize, 2*ticketPrice);
+        assertEq(raffle.totalTickets, 2);
+        assertEq(raffle.accumulatedPrize, 2*ticketPrice);
     }
 
     function test_NFTMint() public {
         vm.startPrank(ticketBuyerOne);
         raffleHouse.buyTicket{value: ticketPrice}(0);
 
-        (
-            address creator,
-            uint256 ticketPrice_,
-            uint256 startTime_,
-            uint256 endTime_,
-            string memory ticketName,
-            string memory ticketSymbol,
-            address token_,
-            uint256 accumulatedPrize,
-            uint256 totalTickets,
-            bool winnerSelected,
-            uint256 winningTicket
-        ) = raffleHouse.raffles(0);
+       Raffle memory raffle = raffleHouse.getRaffle(0);
 
 
-        token = NFT(token_);
+        token = NFT(raffle.token);
         assertEq(token.ownerOf(0), ticketBuyerOne);
     }
 
@@ -416,21 +356,9 @@ contract WinnerSelectionTest is Test {
         emit WinnerSelected(0, 0);
         raffleHouse.selectWinner(0);
 
-        (
-            address creator,
-            uint256 ticketPrice_,
-            uint256 startTime_,
-            uint256 endTime_,
-            string memory ticketName,
-            string memory ticketSymbol,
-            address token_,
-            uint256 accumulatedPrize,
-            uint256 totalTickets,
-            bool winnerSelected,
-            uint256 winningTicket
-        ) = raffleHouse.raffles(0);
+        Raffle memory raffle = raffleHouse.getRaffle(0);
 
-        assertEq(winnerSelected, true);
+        assertEq(raffle.winnerSelected, true);
     }
 
 }
@@ -507,26 +435,15 @@ contract ClaimPrizeTest is Test {
     function test_revertIf_NotOwnerOfWinningTicket() public {
         vm.warp(endTime + 1);
         raffleHouse.selectWinner(0);
-        (
-            address creator,
-            uint256 ticketPrice_,
-            uint256 startTime_,
-            uint256 endTime_,
-            string memory ticketName,
-            string memory ticketSymbol,
-            address token_,
-            uint256 accumulatedPrize,
-            uint256 totalTickets,
-            bool winnerSelected,
-            uint256 winningTicket
-        ) = raffleHouse.raffles(0);
+        Raffle memory raffle = raffleHouse.getRaffle(0);
 
-        if(winningTicket == 0) {
+        address winner = NFT(raffle.token).ownerOf(raffle.winningTicket);
+        if(winner == ticketBuyerOne) {
             vm.startPrank(ticketBuyerTwo);
         } else {
             vm.startPrank(ticketBuyerOne);
         }
-        
+        uint256 winningTicket = raffle.winningTicket;
         vm.expectRevert(NotOwnerOfWinningTicket.selector);
         raffleHouse.claimPrize(0, winningTicket);
     }   
@@ -534,64 +451,28 @@ contract ClaimPrizeTest is Test {
      function test_EmitEventOnCliamPrize() public {
         vm.warp(endTime + 1);
         raffleHouse.selectWinner(0);
-        address winner;
-        (
-            address creator,
-            uint256 ticketPrice_,
-            uint256 startTime_,
-            uint256 endTime_,
-            string memory ticketName,
-            string memory ticketSymbol,
-            address token_,
-            uint256 accumulatedPrize,
-            uint256 totalTickets,
-            bool winnerSelected,
-            uint256 winningTicket
-        ) = raffleHouse.raffles(0);
-
-        if(winningTicket == 0) {
-            winner = ticketBuyerOne;
-            vm.startPrank(ticketBuyerOne);
-        } else {
-            winner = ticketBuyerTwo;
-            vm.startPrank(ticketBuyerTwo);
-        }
         
+        Raffle memory raffle = raffleHouse.getRaffle(0);
+
+        address winner = NFT(raffle.token).ownerOf(raffle.winningTicket);
+        vm.startPrank(winner);
         vm.expectEmit(false, false, false, true);
-        emit WinnerClaimedAward(0, winner, accumulatedPrize);
-        raffleHouse.claimPrize(0, winningTicket);
+        emit WinnerClaimedAward(0, winner, raffle.accumulatedPrize);
+        raffleHouse.claimPrize(0, raffle.winningTicket);
     }  
 
     function test_ClaimPrizeChangeBalance() public {
         vm.warp(endTime + 1);
         raffleHouse.selectWinner(0);
-        address winner;
-        (
-            address creator,
-            uint256 ticketPrice_,
-            uint256 startTime_,
-            uint256 endTime_,
-            string memory ticketName,
-            string memory ticketSymbol,
-            address token_,
-            uint256 accumulatedPrize,
-            uint256 totalTickets,
-            bool winnerSelected,
-            uint256 winningTicket
-        ) = raffleHouse.raffles(0);
+        Raffle memory raffle = raffleHouse.getRaffle(0);
 
-        if(winningTicket == 0) {
-            winner = ticketBuyerOne;
-            vm.startPrank(ticketBuyerOne);
-        } else {
-            winner = ticketBuyerTwo;
-            vm.startPrank(ticketBuyerTwo);
-        }
+        address winner = NFT(raffle.token).ownerOf(raffle.winningTicket);
+        vm.startPrank(winner);
         
         uint256 winnerCurrentBalance = winner.balance;
-        raffleHouse.claimPrize(0, winningTicket);
+        raffleHouse.claimPrize(0, raffle.winningTicket);
 
-        assertEq(winner.balance, winnerCurrentBalance + accumulatedPrize);
+        assertEq(winner.balance, winnerCurrentBalance + raffle.accumulatedPrize);
     } 
 
 }
@@ -653,33 +534,15 @@ contract RaffleLifecycleTest is Test {
         vm.stopPrank();
 
         // Step 4: Claim Prize
-        address winner;
-        (
-            address creator,
-            uint256 ticketPrice_,
-            uint256 startTime_,
-            uint256 endTime_,
-            string memory ticketName,
-            string memory ticketSymbol,
-            address token_,
-            uint256 accumulatedPrize,
-            uint256 totalTickets,
-            bool winnerSelected,
-            uint256 winningTicket
-        ) = raffleHouse.raffles(0);
+        Raffle memory raffle = raffleHouse.getRaffle(0);
 
-        if (winningTicket == 0) {
-            winner = ticketBuyerOne;
-            vm.startPrank(ticketBuyerOne);
-        } else {
-            winner = ticketBuyerTwo;
-            vm.startPrank(ticketBuyerTwo);
-        }
+        address winner = NFT(raffle.token).ownerOf(raffle.winningTicket);
+        vm.startPrank(winner);
 
         uint256 winnerCurrentBalance = winner.balance;
-        raffleHouse.claimPrize(0, winningTicket);
+        raffleHouse.claimPrize(0, raffle.winningTicket);
 
-        assertEq(winner.balance, winnerCurrentBalance + accumulatedPrize);
+        assertEq(winner.balance, winnerCurrentBalance + raffle.accumulatedPrize);
     }
 }
 

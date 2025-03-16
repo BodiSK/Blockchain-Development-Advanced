@@ -62,12 +62,12 @@ contract RaffleHouse {
         uint256 ticketPrice,
         uint256 startTime,
         uint256 endTime,
-        string memory ticketName,
-        string memory ticketSymbol
+        string calldata ticketName,
+        string calldata ticketSymbol
     ) public {
 
-        if(ticketPrice<=0) revert InvalidTicketPrice();
-        if(startTime<=0 || startTime>=endTime) revert InvalidTime();
+        if(ticketPrice == 0) revert InvalidTicketPrice();
+        if(startTime<=0 || startTime>=endTime ) revert InvalidTime();
 
         NFT nft = new NFT(address(this), ticketName, ticketSymbol);
 
@@ -138,6 +138,11 @@ contract RaffleHouse {
         payable(msg.sender).transfer(raffle.accumulatedPrize);
         emit WinnerClaimedAward(raffleId, msg.sender, raffle.accumulatedPrize);
         
+    }
+
+    function getRaffle(uint256 raffleId) public view returns (Raffle memory) {
+        if(raffleId>=raffleCounter) revert InvalidRaffleId();
+        return raffles[raffleId];
     }
     
 }
