@@ -3,8 +3,8 @@ pragma solidity 0.8.28;
 
 import {Test} from "forge-std/Test.sol";
 import {console} from "forge-std/console.sol";
-import {RaffleHouse, Raffle, InvalidTicketPrice, InvalidTime, InvalidRaffleId, RaffleInActive, InvalidAmount, RaffleStillActive, NoTicketsPurchased, NotOwnerOfWinningTicket} from "../src/RaffleHouse.sol";
-import {NFT} from "../src/NFT.sol";
+import {RaffleHouse, Raffle, InvalidTicketPrice, InvalidTime, InvalidRaffleId, RaffleInActive, InvalidAmount, RaffleStillActive, NoTicketsPurchased, NotOwnerOfWinningTicket} from "../../src/foundry-toolchain/RaffleHouse.sol";
+import {NFT} from "../../src/foundry-toolchain/NFT.sol";
 import {IERC721} from "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 
 contract RaffleHouseInitilizationTest is Test {
