@@ -6,7 +6,7 @@ import {Attack} from "../../src/security-in-smart-contract-development/Elevator.
 import {console} from "forge-std/console.sol";
 import {Test} from "forge-std/Test.sol";
 
-contract TestAttack is Test {
+contract ElevatorAttackTest is Test {
     Elevator elevator;
     Attack attack;  
 

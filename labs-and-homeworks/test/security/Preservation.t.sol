@@ -7,7 +7,7 @@ import {LibraryContract} from "../../src/security-in-smart-contract-development/
 import {console} from "forge-std/console.sol";
 import {Test} from "forge-std/Test.sol";
 
-contract TestPreservationAttack is Test {
+contract PreservationAttackTest is Test {
     address presevartionOwner;
     address attacker;
 

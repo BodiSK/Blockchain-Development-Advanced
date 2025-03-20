@@ -7,7 +7,7 @@ import {Attack} from "../../src/security-in-smart-contract-development/King.sol"
 import {console} from "forge-std/console.sol";
 import {Test} from "forge-std/Test.sol";
 
-contract TestAttack is Test {
+contract KingAttackTest is Test {
 
     King king;
     Attack attack;

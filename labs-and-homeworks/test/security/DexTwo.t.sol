@@ -9,7 +9,7 @@ import {SwappableTokenTwo} from "../../src/security-in-smart-contract-developmen
 import {console} from "forge-std/console.sol";
 import {Test} from "forge-std/Test.sol";
 
-contract TestDexTwoAttack is Test {
+contract DexTwoAttackTest is Test {
     address dexOwner;
     address attacker;
 
