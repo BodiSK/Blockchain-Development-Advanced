@@ -1,0 +1,37 @@
+{
+  "root": "0x4e89587435562e9364d2cc41f32cd043cdcb7541e05ff5fecf267c114795f5ba",
+  "recipients": [
+    {
+      "address": "0x0000000000000000000000000000000000000001",
+      "ammount": "100000000000000000",
+      "proof": [
+        "0xbe397d3e3191d87792fdf8ac02c0fb1adacd0389977e0c01d6b9ab2ee0ec9b5b",
+        "0x6a87104c343e2dff2b1d9e9e66f7b4a8fa8bc35ce3fed9f8952d00b46efebad1"
+      ]
+    },
+    {
+      "address": "0x0000000000000000000000000000000000000002",
+      "ammount": "50000000000000000000",
+      "proof": [
+        "0x240c0142747739356492934ed072a311047b0b65f6cfa134e240ee5e16e0bb1a",
+        "0x6a87104c343e2dff2b1d9e9e66f7b4a8fa8bc35ce3fed9f8952d00b46efebad1"
+      ]
+    },
+    {
+      "address": "0x0000000000000000000000000000000000000003",
+      "ammount": "100000000000000000000",
+      "proof": [
+        "0x9aa4122dd99bbec1983c8d4d54b744da45991a6f25ed58d5ddfc9810622bb368",
+        "0xa63a4283cc70ed420edb4bf06df97d3a69bcef501427aff6e7337c4240a13738"
+      ]
+    },
+    {
+      "address": "0x0000000000000000000000000000000000000004",
+      "ammount": "200000000000000000000",
+      "proof": [
+        "0x1ed100b41cc6200aa3baa02481182a7ab4503579ce498d6d68441fc1ff6e224e",
+        "0xa63a4283cc70ed420edb4bf06df97d3a69bcef501427aff6e7337c4240a13738"
+      ]
+    }
+  ]
+}
