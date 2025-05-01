@@ -22,12 +22,14 @@ contract VotingLogicV1 is Initializable, OwnableUpgradeable {
     mapping (uint256 => Proposal) public proposals;
     uint256 internal proposalCount;
 
+    /// @custom:oz-upgrades-unsafe-allow constructor
     constructor ()  {
         _disableInitializers();
     }
 
-    function initialize(address _owner) public initializer {
-        __Ownable_init(_owner);
+    /// @custom:oz-upgrades-validate-as-initializer
+    function initialize() public initializer {
+        __Ownable_init(msg.sender);
     }
 
 

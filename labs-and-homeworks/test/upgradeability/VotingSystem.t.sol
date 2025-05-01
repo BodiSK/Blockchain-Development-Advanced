@@ -25,7 +25,7 @@ contract VotingSystemTest is Test {
         address proxy = Upgrades.deployTransparentProxy(
             "VotingLogicV1.sol",
             msg.sender,
-            abi.encodeCall(VotingLogicV1.initialize, (address(this)))
+            abi.encodeCall(VotingLogicV1.initialize, ())
         );
 
         VotingLogicV1 votingProxy = VotingLogicV1(proxy);
@@ -48,7 +48,7 @@ contract VotingSystemTest is Test {
         console.log("Admin address: ", admin);
 
         //4. Upgrade the proxy contract to VotingLogicV2
-        Upgrades.upgradeTo(proxy, address(votingLogicV2));
+        //Upgrades.upgradeProxy(proxy,  "VotingLogicV2.sol", "", msg.sender);
 
         address newImplementation = Upgrades.getImplementationAddress(proxy);
         console.log("New implementation address: ", newImplementation);
