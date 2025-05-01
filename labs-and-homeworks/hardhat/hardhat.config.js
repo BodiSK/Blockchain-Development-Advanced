@@ -1,4 +1,5 @@
 require("@nomicfoundation/hardhat-toolbox");
+require('@openzeppelin/hardhat-upgrades');
 require("./tasks/index.js");
 
 /** @type import('hardhat/config').HardhatUserConfig */
