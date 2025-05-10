@@ -10,3 +10,12 @@
 [submodule "labs-and-homeworks/lib/forge-std"]
 	path = labs-and-homeworks/lib/forge-std
 	url = https://github.com/foundry-rs/forge-std
+[submodule "labs-and-homeworks/lib/foundry-chainlink-toolkit"]
+	path = labs-and-homeworks/lib/foundry-chainlink-toolkit
+	url = https://github.com/smartcontractkit/foundry-chainlink-toolkit
+[submodule "labs-and-homeworks/lib/chainlink-brownie-contracts"]
+	path = labs-and-homeworks/lib/chainlink-brownie-contracts
+	url = https://github.com/smartcontractkit/chainlink-brownie-contracts
+[submodule "labs-and-homeworks/lib/chainlink"]
+	path = labs-and-homeworks/lib/chainlink
+	url = https://github.com/smartcontractkit/chainlink
